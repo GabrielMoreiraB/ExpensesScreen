@@ -26,19 +26,36 @@ const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Jul
 const ExpensesScreen = () => {
     const [ano, setAno] = React.useState('');
     const [mes, setMes] = React.useState('');
-    const [expenses, setExpenses] = React.useState<IExpenses[]>([])
+    const [expenses, setExpenses] = React.useState<IExpenses[]>([]);
+    const [tot, setTot] = React.useState(0);
 
     React.useEffect(()=>{
         getExpenses(ano,mes).then(expenses => setExpenses(expenses))
-    },[ano, mes])
+
+        /* const total = expenses.reduce((accumulator, expense) => accumulator + expense.valor, 0);
+        setTot(total); */
+    },[ano, mes]);
+
+
+    React.useEffect(()=>{
+        const total = expenses.reduce((accumulator, expense) => accumulator + expense.valor, 0);
+        setTot(total);
+    },[expenses])
+
+
+
+
 
     console.log(expenses)
+    console.log(tot)
     const handleChangeAno = (event: SelectChangeEvent) => {
         setAno(event.target.value);
     };
     const handleChangeMes = (event: SelectChangeEvent) => {
         setMes((event.target.value).padStart(2, '0'));
     };
+
+    
 
 
     return (
@@ -77,7 +94,7 @@ const ExpensesScreen = () => {
                     </Select>
                 </FormControl>
                 
-                <Box flex={1} textAlign='end'><h3>Despesa Total: R$ </h3></Box>
+                <Box paddingRight="18px" flex={1} textAlign='end'><h3>Despesa Total: R${(tot).toFixed(2)} </h3></Box>
             </Box>
 
             <TableContainer component={"div"}>
@@ -88,7 +105,15 @@ const ExpensesScreen = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow>
+                        {expenses.map((expense) => 
+                        <TableRow key={expense.id}>
+                            <TableCell align="center"><strong>{expense.descricao}</strong>  </TableCell>
+                            <TableCell align="center"> {expense.categoria} </TableCell>
+                            <TableCell align="center"> {expense.dia} </TableCell>
+                            <TableCell align="center"> {expense.valor} </TableCell>
+                        </TableRow>
+                        )}
+                        {/* <TableRow>
                             {cabecalho.map(item => <TableCell key={item} align="center">x </TableCell>)}
                         </TableRow>
                         <TableRow>
@@ -96,7 +121,7 @@ const ExpensesScreen = () => {
                         </TableRow>
                         <TableRow>
                             {cabecalho.map(item => <TableCell key={item} align="center">x </TableCell>)}
-                        </TableRow>
+                        </TableRow> */}
                     </TableBody>
                 </Table>
             </TableContainer>
