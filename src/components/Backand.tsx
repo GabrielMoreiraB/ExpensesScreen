@@ -9,8 +9,8 @@ export interface IExpenses{
     dia:string;
 }
 
-export function getExpenses(): Promise<IExpenses[]>{
-    return fetch(`http://localhost:8080/despesas`).then(resp => {
+export function getExpenses(year:string, month:string): Promise<IExpenses[]>{
+    return fetch(`http://localhost:8080/despesas?mes=${year}-${month}&_sort=dia`).then(resp => {
         return resp.json();
     })
 }

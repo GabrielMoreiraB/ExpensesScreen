@@ -1,4 +1,5 @@
 import { getExpenses } from "./Backand";
+import { IExpenses } from "./Backand";
 
 
 import * as React from 'react';
@@ -19,26 +20,25 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 const cabecalho = ["Despesa", "Categoria", "Dia", "Valor(R$)"];
 
-const months = ["Jan", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
 
 
 const ExpensesScreen = () => {
-    /* getExpenses().then(expenses => {
-        for(const expense of expenses) {
-            console.log(expense)
-        }
-    }) */
     const [ano, setAno] = React.useState('');
     const [mes, setMes] = React.useState('');
+    const [expenses, setExpenses] = React.useState<IExpenses[]>([])
 
+    React.useEffect(()=>{
+        getExpenses(ano,mes).then(expenses => setExpenses(expenses))
+    },[ano, mes])
+
+    console.log(expenses)
     const handleChangeAno = (event: SelectChangeEvent) => {
         setAno(event.target.value);
     };
     const handleChangeMes = (event: SelectChangeEvent) => {
-        setMes(event.target.value);
+        setMes((event.target.value).padStart(2, '0'));
     };
-
-    console.log(ano, mes)
 
 
     return (
@@ -56,8 +56,8 @@ const ExpensesScreen = () => {
                         <MenuItem value="">
                             <em>Ano</em>
                         </MenuItem>
-                        <MenuItem value={2020}>2020</MenuItem>
-                        <MenuItem value={2021}>2021</MenuItem>
+                        <MenuItem value={"2020"}>2020</MenuItem>
+                        <MenuItem value={"2021"}>2021</MenuItem>
                     </Select>
                 </FormControl>
 
@@ -66,23 +66,18 @@ const ExpensesScreen = () => {
                     <Select
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
-                        value={mes}
+                        value={months[(+mes)-1]}
                         onChange={handleChangeMes}
                         label="Mês"
                     >
                         <MenuItem value="">
                             <em>Mês</em>
                         </MenuItem>
-                        {months.map((month, index) =><MenuItem key={index} value={(index+1)}>{month}</MenuItem>)}
+                        {months.map((month, index) =><MenuItem key={index} value={`${(index+1)}`}>{month}</MenuItem>)}
                     </Select>
                 </FormControl>
                 
-
-
-
-
-
-                <Box flex='1'><h3>Despesa Total: R$ </h3></Box>
+                <Box flex={1} textAlign='end'><h3>Despesa Total: R$ </h3></Box>
             </Box>
 
             <TableContainer component={"div"}>
