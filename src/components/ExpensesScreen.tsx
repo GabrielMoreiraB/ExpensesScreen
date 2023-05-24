@@ -17,6 +17,22 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 
+import AppBar from '@mui/material/AppBar';
+
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+
+import AdbIcon from '@mui/icons-material/Adb';
+
+const pages = ['Products', 'Pricing', 'Blog'];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const cabecalho = ["Despesa", "Categoria", "Dia", "Valor(R$)"];
 
@@ -29,21 +45,37 @@ const ExpensesScreen = () => {
     const [expenses, setExpenses] = React.useState<IExpenses[]>([]);
     const [tot, setTot] = React.useState(0);
 
-    React.useEffect(()=>{
-        getExpenses(ano,mes).then(expenses => setExpenses(expenses))
+    React.useEffect(() => {
+        getExpenses(ano, mes).then(expenses => setExpenses(expenses))
 
         /* const total = expenses.reduce((accumulator, expense) => accumulator + expense.valor, 0);
         setTot(total); */
-    },[ano, mes]);
+    }, [ano, mes]);
 
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
         const total = expenses.reduce((accumulator, expense) => accumulator + expense.valor, 0);
         setTot(total);
-    },[expenses])
+    }, [expenses])
 
 
+    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
+    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElNav(event.currentTarget);
+    };
+    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElUser(event.currentTarget);
+    };
+
+    const handleCloseNavMenu = () => {
+        setAnchorElNav(null);
+    };
+
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
 
 
     console.log(expenses)
@@ -55,11 +87,93 @@ const ExpensesScreen = () => {
         setMes((event.target.value).padStart(2, '0'));
     };
 
-    
+
 
 
     return (
         <Box width="100vw">
+            <Box>
+                <AppBar position="static">
+                    <Container maxWidth="xl">
+                        <Toolbar disableGutters>
+                            <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                component="a"
+                                href="/"
+                                sx={{
+                                    mr: 2,
+                                    display: { xs: 'none', md: 'flex' },
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: 'inherit',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                Expenses Screen
+                            </Typography>
+
+                            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                                <IconButton
+                                    size="large"
+                                    aria-label="account of current user"
+                                    aria-controls="menu-appbar"
+                                    aria-haspopup="true"
+                                    onClick={handleOpenNavMenu}
+                                    color="inherit"
+                                >
+                                    <MenuIcon />
+                                </IconButton>
+                                <Menu
+                                    id="menu-appbar"
+                                    anchorEl={anchorElNav}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'left',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                    }}
+                                    open={Boolean(anchorElNav)}
+                                    onClose={handleCloseNavMenu}
+                                    sx={{
+                                        display: { xs: 'block', md: 'none' },
+                                    }}
+                                >
+                                    {pages.map((page) => (
+                                        <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                            <Typography textAlign="center">{page}</Typography>
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </Box>
+                            <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                            <Typography
+                                variant="h5"
+                                noWrap
+                                component="a"
+                                href=""
+                                sx={{
+                                    mr: 2,
+                                    display: { xs: 'flex', md: 'none' },
+                                    flexGrow: 1,
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: 'inherit',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                ExpensesScreen
+                            </Typography>
+                        </Toolbar>
+                    </Container>
+                </AppBar>
+            </Box>
             <Box display="flex" padding="10px">
                 <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                     <InputLabel id="demo-simple-select-standard-label">Ano</InputLabel>
@@ -83,17 +197,17 @@ const ExpensesScreen = () => {
                     <Select
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
-                        value={months[(+mes)-1]}
+                        value={months[(+mes) - 1]}
                         onChange={handleChangeMes}
                         label="Mês"
                     >
                         <MenuItem value="">
                             <em>Mês</em>
                         </MenuItem>
-                        {months.map((month, index) =><MenuItem key={index} value={`${(index+1)}`}>{month}</MenuItem>)}
+                        {months.map((month, index) => <MenuItem key={index} value={`${(index + 1)}`}>{month}</MenuItem>)}
                     </Select>
                 </FormControl>
-                
+
                 <Box paddingRight="18px" flex={1} textAlign='end'><h3>Despesa Total: R${(tot).toFixed(2)} </h3></Box>
             </Box>
 
@@ -105,13 +219,13 @@ const ExpensesScreen = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {expenses.map((expense) => 
-                        <TableRow key={expense.id}>
-                            <TableCell align="center"><strong>{expense.descricao}</strong>  </TableCell>
-                            <TableCell align="center"> {expense.categoria} </TableCell>
-                            <TableCell align="center"> {expense.dia} </TableCell>
-                            <TableCell align="center"> {expense.valor} </TableCell>
-                        </TableRow>
+                        {expenses.map((expense) =>
+                            <TableRow key={expense.id}>
+                                <TableCell align="center"><strong>{expense.descricao}</strong>  </TableCell>
+                                <TableCell align="center"> {expense.categoria} </TableCell>
+                                <TableCell align="center"> {expense.dia} </TableCell>
+                                <TableCell align="center"> {expense.valor} </TableCell>
+                            </TableRow>
                         )}
                         {/* <TableRow>
                             {cabecalho.map(item => <TableCell key={item} align="center">x </TableCell>)}
