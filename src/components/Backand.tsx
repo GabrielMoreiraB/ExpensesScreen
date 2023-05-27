@@ -10,7 +10,7 @@ export interface IExpenses{
 }
 
 export function getExpenses(year:string, month:string): Promise<IExpenses[]>{
-    return fetch(`https://expensesscreen-gabrielbm.glitch.me/despesas?mes=${year}-${month}&_sort=dia`).then(resp => {
+    return fetch(`http://localhost:8080/despesas?mes=${year}-${month}&_sort=dia`).then(resp => {
         return resp.json();
     })
 }
